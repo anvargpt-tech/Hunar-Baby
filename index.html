@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hunar Baby — Mobil ilova dizayni</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1C3A63">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Hunar Baby">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<style>
+  #installBar{
+    position:fixed;left:16px;right:16px;bottom:16px;z-index:999;
+    background:#1C3A63;color:#fff;border-radius:14px;padding:14px 16px;
+    display:none;align-items:center;gap:12px;box-shadow:0 12px 30px rgba(0,0,0,0.25);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  }
+  #installBar img{width:34px;height:34px;border-radius:9px;flex-shrink:0;}
+  #installBar .txt{flex:1;font-size:12.5px;line-height:1.3;}
+  #installBar button{
+    background:#C6852B;color:#fff;border:none;border-radius:10px;
+    padding:9px 14px;font-weight:800;font-size:12.5px;
+  }
+  #installBar .x{background:transparent;color:rgba(255,255,255,0.6);padding:6px;font-size:16px;}
+</style>
+<style>
+  :root{
+    --bg:#F2EFE8;
+    --ink:#1A1A1F;
+    --ink-soft:#6B6963;
+    --card:#FFFFFF;
+    --cobalt:#1C3A63;
+    --cobalt-deep:#0F2440;
+    --turquoise:#0E8E86;
+    --ochre:#C6852B;
+    --line:rgba(26,26,31,0.10);
+    --neo-base:#F3F1EC;
+    --neo-d:rgba(163,150,120,0.38);
+    --neo-l:rgba(255,255,255,0.95);
+    --font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --font-mono:"SF Mono",SFMono-Regular,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);}
+  h1,h2,h3,h4{margin:0;}
+  p{margin:0;}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 32px;}
+  /* neomorphic soft-UI helpers */
+  .neo-raised{background:var(--neo-base);box-shadow:5px 5px 10px var(--neo-d),-5px -5px 10px var(--neo-l);}
+  .neo-pressed{background:var(--neo-base);box-shadow:inset 3px 3px 6px var(--neo-d),inset -3px -3px 6px var(--neo-l);}
+  .neo-strip{height:14px;border-radius:8px;margin:0 32px;background:var(--neo-base);box-shadow:inset 4px 4px 8px var(--neo-d),inset -4px -4px 8px var(--neo-l);position:relative;overflow:hidden;}
+  .neo-strip::after{content:"";position:absolute;top:3px;left:14px;right:14px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--cobalt),var(--turquoise),var(--ochre));opacity:0.35;}
+  @media(max-width:900px){.neo-strip{margin:0 12px;}}
+
+  /* ---------- top page header ---------- */
+  .pagehead{padding:38px 0 26px;}
+  .brandrow{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-mark{width:26px;height:26px;position:relative;}
+  .brand-mark span{position:absolute;width:12px;height:12px;transform:rotate(45deg);}
+  .brand-mark .b1{background:var(--cobalt);top:0;left:7px;}
+  .brand-mark .b2{background:var(--ochre);bottom:0;left:0;}
+  .brand-mark .b3{background:var(--turquoise);bottom:0;right:0;}
+  .brand-name{font-weight:800;font-size:19px;letter-spacing:-0.01em;}
+  .brand-name em{font-style:normal;color:var(--ochre);}
+  .brand-tag{font-size:12.5px;color:var(--ink-soft);margin-top:2px;}
+  .jumpnav{display:flex;gap:6px;flex-wrap:wrap;}
+  .jumpnav a{
+    font-size:12.5px;font-weight:700;color:var(--ink-soft);text-decoration:none;
+    background:var(--neo-base);border:none;padding:9px 15px;border-radius:20px;
+    box-shadow:4px 4px 8px var(--neo-d),-4px -4px 8px var(--neo-l);
+    transition:box-shadow .15s,color .15s;
+  }
+  .jumpnav a:hover{color:var(--cobalt);box-shadow:inset 2px 2px 5px var(--neo-d),inset -2px -2px 5px var(--neo-l);}
+  .pagehead h1{font-size:34px;line-height:1.1;margin:26px 0 10px;max-width:640px;letter-spacing:-0.01em;}
+  .pagehead p.lead{color:var(--ink-soft);font-size:15px;max-width:560px;}
+
+  /* ---------- section shell ---------- */
+  .flow-section{padding:52px 0;}
+  .flow-head{padding:0 0 22px;}
+  .flow-kicker{
+    font-family:var(--font-mono);font-size:11.5px;text-transform:uppercase;letter-spacing:0.1em;
+    color:var(--turquoise);font-weight:700;display:block;margin-bottom:8px;
+  }
+  .flow-head h2{font-size:25px;letter-spacing:-0.01em;}
+  .flow-head p{color:var(--ink-soft);font-size:13.5px;margin-top:6px;max-width:520px;}
+
+  .frame-row{
+    display:flex;gap:26px;overflow-x:auto;padding:14px 4px 22px;
+    scroll-snap-type:x proximity;
+  }
+  .frame-row::-webkit-scrollbar{height:7px;}
+  .frame-row::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px;}
+  .frame-cap{margin-top:12px;text-align:center;}
+  .frame-cap b{font-size:12.5px;display:block;}
+  .frame-cap span{font-size:11px;color:var(--ink-soft);}
+  .frame-col{flex:0 0 auto;scroll-snap-align:start;}
+
+  /* backdrop moods per section */
+  .mood-dark{background:linear-gradient(180deg,#0E2038 0%,#0B3B44 100%);}
+  .mood-plain{background:var(--bg);}
+  .mood-warm{background:linear-gradient(180deg,#F4E8D6 0%,#EFDFC4 100%);}
+  .mood-cool{background:linear-gradient(180deg,#E7EDF3 0%,#DCE7EF 100%);}
+  .mood-deep{background:linear-gradient(180deg,#132A4A 0%,#0B1B33 100%);}
+  .mood-soft{background:linear-gradient(180deg,#FBEFE2 0%,#F6E4E4 100%);}
+  .flow-section.moodwrap{border-radius:22px;margin:0 16px;padding:44px 32px;}
+  @media(max-width:900px){.flow-section.moodwrap{margin:0 6px;padding:34px 18px;}}
+
+  /* ---------- phone shell ---------- */
+  .phone-shell{
+    width:272px;background:#0B0B0D;border-radius:42px;padding:11px;
+    box-shadow:0 30px 60px -14px rgba(10,20,40,0.35),0 8px 18px rgba(10,20,40,0.18);
+  }
+  .phone-screen{
+    background:#fff;border-radius:32px;overflow:hidden;height:568px;
+    position:relative;display:flex;flex-direction:column;
+  }
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:104px;height:20px;background:#0B0B0D;border-radius:0 0 14px 14px;z-index:6;}
+  .statusbar{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:13px 20px 2px;font-size:11.5px;font-weight:700;font-family:var(--font-mono);
+    position:relative;z-index:5;
+  }
+  .sb-icons{display:flex;gap:5px;align-items:center;}
+  .sb-bars{display:flex;align-items:flex-end;gap:2px;height:9px;}
+  .sb-bars i{display:block;width:2.5px;background:currentColor;border-radius:1px;}
+  .sb-bars i:nth-child(1){height:4px;} .sb-bars i:nth-child(2){height:6px;}
+  .sb-bars i:nth-child(3){height:8px;} .sb-bars i:nth-child(4){height:9px;}
+  .sb-batt{width:18px;height:9px;border:1.3px solid currentColor;border-radius:2px;position:relative;}
+  .sb-batt::after{content:"";position:absolute;right:-3px;top:2.5px;width:1.5px;height:4px;background:currentColor;border-radius:1px;}
+  .sb-batt::before{content:"";position:absolute;inset:1.5px;background:currentColor;border-radius:1px;width:70%;}
+  .light-sb{color:#fff;}
+  .dark-sb{color:#141414;}
+  .home-indicator{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:110px;height:4px;border-radius:3px;background:rgba(0,0,0,0.18);z-index:6;}
+  .home-indicator.on-dark{background:rgba(255,255,255,0.4);}
+
+  .scr-body{flex:1;overflow:hidden;position:relative;}
+  .scr-pad{padding:14px 18px 18px;}
+
+  .topbar-inphone{display:flex;align-items:center;justify-content:space-between;padding:2px 18px 10px;}
+  .icon-btn{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.16);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+  .icon-btn.on-white{background:var(--neo-base);box-shadow:3px 3px 6px var(--neo-d),-3px -3px 6px var(--neo-l);}
+
+  /* ---------- generic UI atoms inside phones ---------- */
+  .pill-btn{
+    border:none;border-radius:14px;padding:14px;font-weight:800;font-size:13.5px;
+    display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  }
+  .pill-btn.primary{background:var(--cobalt);color:#fff;box-shadow:4px 4px 10px rgba(15,36,64,0.35);}
+  .pill-btn.ochre{background:var(--ochre);color:#fff;box-shadow:4px 4px 10px rgba(150,100,20,0.3);}
+  .pill-btn.teal{background:var(--turquoise);color:#fff;box-shadow:4px 4px 10px rgba(10,90,85,0.3);}
+  .pill-btn.ghost{background:var(--neo-base);color:var(--ink);box-shadow:4px 4px 8px var(--neo-d),-4px -4px 8px var(--neo-l);}
+  .search-bar-in{display:flex;align-items:center;gap:8px;background:var(--neo-base);border-radius:12px;padding:11px 13px;font-size:12.5px;color:var(--ink-soft);box-shadow:inset 2px 2px 5px var(--neo-d),inset -2px -2px 5px var(--neo-l);}
+  .quickchip-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;}
+  .quickchip{flex:0 0 auto;text-align:center;width:58px;}
+  .quickchip .ico{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:18px;margin:0 auto 5px;background:var(--neo-base);box-shadow:4px 4px 8px var(--neo-d),-4px -4px 8px var(--neo-l);}
+  .quickchip .ico img{width:24px;height:24px;object-fit:contain;}
+  .quickchip span{font-size:9.5px;color:var(--ink-soft);font-weight:700;line-height:1.15;display:block;}
+  .card-white{background:var(--neo-base);border:none;border-radius:14px;padding:13px;box-shadow:5px 5px 10px var(--neo-d),-5px -5px 10px var(--neo-l);}
+  .stars-mini{color:var(--ochre);font-size:11px;letter-spacing:1px;}
+  .stat-chip{background:var(--neo-base);border-radius:11px;padding:9px 6px;text-align:center;box-shadow:3px 3px 6px var(--neo-d),-3px -3px 6px var(--neo-l);}
+  .stat-chip b{display:block;font-size:12.5px;}
+  .stat-chip span{font-size:9px;color:var(--ink-soft);}
+  .tag-chip{background:var(--neo-base);border-radius:16px;padding:6px 11px;font-size:10.5px;font-weight:700;color:var(--ink);display:inline-block;box-shadow:3px 3px 6px var(--neo-d),-3px -3px 6px var(--neo-l);}
+  .avatar-sm{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;}
+  .list-provider{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);}
+  .list-provider:last-child{border-bottom:none;}
+  .bottomtabs{display:flex;justify-content:space-around;padding:10px 6px 20px;border-top:1px solid var(--line);}
+  .bottomtabs .tab{text-align:center;font-size:9px;color:var(--ink-soft);font-weight:700;}
+  .bottomtabs .tab.active{color:var(--cobalt);}
+  .bottomtabs .tab .ti{font-size:16px;display:block;margin-bottom:2px;}
+
+  .date-strip{display:flex;gap:7px;overflow-x:auto;}
+  .date-pill{flex:0 0 auto;width:44px;text-align:center;padding:9px 0;border-radius:11px;background:var(--neo-base);font-size:11px;box-shadow:3px 3px 6px var(--neo-d),-3px -3px 6px var(--neo-l);}
+  .date-pill b{display:block;font-size:13px;}
+  .date-pill.sel{background:var(--turquoise);color:#fff;box-shadow:inset 2px 2px 5px rgba(0,0,0,0.25),inset -2px -2px 5px rgba(255,255,255,0.15);}
+  .time-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .time-slot{text-align:center;padding:9px 0;border-radius:9px;background:var(--neo-base);font-size:11.5px;font-weight:700;box-shadow:3px 3px 6px var(--neo-d),-3px -3px 6px var(--neo-l);}
+  .time-slot.sel{color:var(--turquoise);box-shadow:inset 2px 2px 5px var(--neo-d),inset -2px -2px 5px var(--neo-l);}
+
+  .checklist-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:12px;}
+  .checklist-row:last-child{border-bottom:none;}
+  .cbox{width:18px;height:18px;border-radius:5px;background:var(--neo-base);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;box-shadow:2px 2px 4px var(--neo-d),-2px -2px 4px var(--neo-l);}
+  .cbox.done{background:var(--turquoise);box-shadow:inset 1.5px 1.5px 3px rgba(0,0,0,0.3);}
+
+  .repair-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:11.5px;}
+  .repair-row:last-child{border-bottom:none;}
+  .dur-bar{width:60px;height:5px;background:var(--neo-base);border-radius:3px;overflow:hidden;box-shadow:inset 1.5px 1.5px 3px var(--neo-d);}
+  .dur-fill{height:100%;background:var(--ochre);}
+
+  .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+  .menu-card{background:var(--neo-base);border-radius:12px;padding:10px;text-align:center;box-shadow:4px 4px 8px var(--neo-d),-4px -4px 8px var(--neo-l);}
+  .menu-card .em{font-size:22px;}
+  .menu-card b{font-size:11px;display:block;margin:4px 0 2px;}
+  .menu-card span{font-size:10px;color:var(--ink-soft);font-family:var(--font-mono);}
+
+  .portfolio-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+  .portfolio-card{border-radius:12px;height:74px;display:flex;align-items:flex-end;padding:8px;color:#fff;font-size:10.5px;font-weight:800;}
+
+  .banner-emergency{border-radius:12px;padding:12px;color:#fff;font-size:11.5px;font-weight:700;display:flex;gap:8px;align-items:center;}
+  .cert-row{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--line);font-size:11.5px;}
+  .cert-row:last-child{border-bottom:none;}
+
+  .vehicle-card{border-radius:14px;padding:14px;color:#fff;}
+  .weekday-strip{display:flex;gap:5px;justify-content:space-between;}
+  .weekday-dot{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;background:var(--neo-base);color:var(--ink-soft);box-shadow:2px 2px 5px var(--neo-d),-2px -2px 5px var(--neo-l);}
+  .weekday-dot.on{background:var(--turquoise);color:#fff;box-shadow:inset 1.5px 1.5px 3px rgba(0,0,0,0.3);}
+
+  .role-card{border-radius:14px;padding:16px;background:var(--neo-base);box-shadow:5px 5px 10px var(--neo-d),-5px -5px 10px var(--neo-l);display:flex;gap:12px;align-items:center;}
+  .role-card.sel{box-shadow:inset 3px 3px 7px var(--neo-d),inset -3px -3px 7px var(--neo-l);}
+  .role-card.sel b{color:var(--cobalt);}
+  .role-emoji{width:42px;height:42px;border-radius:12px;background:var(--neo-base);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;box-shadow:3px 3px 6px var(--neo-d),-3px -3px 6px var(--neo-l);}
+  .role-emoji img{width:24px;height:24px;object-fit:contain;}
+
+  .field-mini label{font-size:10px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.03em;display:block;margin-bottom:5px;}
+  .field-mini input, .field-mini select{
+    width:100%;border:none;border-radius:10px;padding:10px 11px;font-size:12.5px;
+    font-family:var(--font-body);background:var(--neo-base);color:var(--ink);
+    box-shadow:inset 2px 2px 5px var(--neo-d),inset -2px -2px 5px var(--neo-l);
+  }
+  .chip-select{display:flex;gap:7px;flex-wrap:wrap;}
+  .chip-select .c{padding:7px 12px;border-radius:16px;background:var(--neo-base);font-size:11px;font-weight:700;box-shadow:3px 3px 6px var(--neo-d),-3px -3px 6px var(--neo-l);}
+  .chip-select .c.sel{background:var(--cobalt);color:#fff;box-shadow:inset 2px 2px 5px rgba(0,0,0,0.3);}
+
+  .donut{width:96px;height:96px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center;margin:0 auto;}
+  .donut .hole{width:64px;height:64px;background:var(--neo-base);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:inset 2px 2px 5px var(--neo-d),inset -2px -2px 5px var(--neo-l);}
+  .donut .hole b{font-size:17px;}
+  .donut .hole span{font-size:8.5px;color:var(--ink-soft);}
+
+  .toggle-sw{width:38px;height:22px;border-radius:12px;background:var(--neo-base);position:relative;flex-shrink:0;box-shadow:inset 2px 2px 5px var(--neo-d),inset -2px -2px 5px var(--neo-l);}
+  .toggle-sw.on{background:var(--turquoise);}
+  .toggle-sw i{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:1px 1px 3px rgba(0,0,0,0.3);}
+  .toggle-sw.on i{left:18px;}
+
+  .footer-page{padding:40px 0 60px;text-align:center;color:var(--ink-soft);font-size:12.5px;}
+
+  @media(max-width:640px){
+    .pagehead h1{font-size:27px;}
+    .wrap{padding:0 18px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="neo-strip"></div>
+
+<div class="pagehead wrap">
+  <div class="brandrow">
+    <div class="brand">
+      <div class="brand-mark"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div>
+      <div>
+        <div class="brand-name">Hunar <em>Baby</em></div>
+        <div class="brand-tag">Mahalliy ustalar bilan mijozni bog'lovchi ilova</div>
+      </div>
+    </div>
+    <div class="jumpnav">
+      <a href="#sec-onboarding">Onboarding</a>
+      <a href="#sec-home">Bosh oqim</a>
+      <a href="#sec-categories">Har bir kasb uchun dizayn</a>
+      <a href="#sec-booking">Buyurtma jarayoni</a>
+      <a href="#sec-provider">Usta kabineti</a>
+      <a href="#sec-register">Ro'yxatdan o'tish</a>
+    </div>
+  </div>
+  <h1>Hunar Baby — telefon uchun mobil ilova sifatida qayta ishlangan interfeys.</h1>
+  <p class="lead">Har bir ekran haqiqiy ilova o'lchamida (telefon ramkasida) ko'rsatilgan. Har bir kasb — hamshiradan haydovchigacha — o'ziga xos ranг, ma'lumot va buyurtma oqimiga ega alohida dizaynga ega.</p>
+</div>
+
+<!-- ================= ONBOARDING ================= -->
+<section class="flow-section moodwrap mood-dark" id="sec-onboarding">
+  <div class="wrap" style="padding:0;">
+    <div class="flow-head">
+      <span class="flow-kicker" style="color:#7FD8CE;">01 · Birinchi ochilish</span>
+      <h2 style="color:#fff;">Onboarding oqimi</h2>
+      <p style="color:rgba(255,255,255,0.65);">Ilova ochilganda mijoz yoki usta birinchi bo'lib shu uch ekranni ko'radi.</p>
+    </div>
+    <div class="frame-row" id="row-onboarding"></div>
+  </div>
+</section>
+
+<!-- ================= HOME / MIJOZ OQIMI ================= -->
+<section class="flow-section" id="sec-home">
+  <div class="wrap" style="padding:0;">
+    <div class="flow-head">
+      <span class="flow-kicker">02 · Mijoz uchun</span>
+      <h2>Bosh sahifa va qidiruv oqimi</h2>
+      <p>Mijoz ilovaga kirgach ko'radigan asosiy ekranlar: bosh sahifa, ro'yxat ko'rinishidagi qidiruv va xarita orqali eng yaqin ustani topish.</p>
+    </div>
+    <div class="frame-row" id="row-home"></div>
+  </div>
+</section>
+
+<!-- ================= CATEGORY-SPECIFIC UI ================= -->
+<section class="flow-section moodwrap mood-warm" id="sec-categories">
+  <div class="wrap" style="padding:0;">
+    <div class="flow-head">
+      <span class="flow-kicker" style="color:#A8672A;">03 · Har bir hunar uchun alohida</span>
+      <h2>Kasbga mos individual interfeys</h2>
+      <p>Har bir soha o'z ranggi, ikonasi va o'ziga xos ma'lumot blokiga ega: oshpazda taomlar menyusi, sartaroshda portfolio, santexnikda favqulodda chaqiruv, haydovchida transport kartasi va h.k.</p>
+    </div>
+    <div class="frame-row" id="row-categories"></div>
+  </div>
+</section>
+
+<!-- ================= BOOKING FLOW ================= -->
+<section class="flow-section moodwrap mood-cool" id="sec-booking">
+  <div class="wrap" style="padding:0;">
+    <div class="flow-head">
+      <span class="flow-kicker" style="color:#3E6A93;">04 · Buyurtma jarayoni</span>
+      <h2>Band qilish, to'lov va baholash</h2>
+      <p>Usta profilidan "Band qilish" bosilgach mijoz shu to'rt ekran orqali o'tadi.</p>
+    </div>
+    <div class="frame-row" id="row-booking"></div>
+  </div>
+</section>
+
+<!-- ================= PROVIDER DASHBOARD ================= -->
+<section class="flow-section moodwrap mood-deep" id="sec-provider">
+  <div class="wrap" style="padding:0;">
+    <div class="flow-head">
+      <span class="flow-kicker" style="color:#7FD8CE;">05 · Usta uchun</span>
+      <h2 style="color:#fff;">Xizmat ko'rsatuvchi shaxsiy kabineti</h2>
+      <p style="color:rgba(255,255,255,0.65);">Ustaning kunlik faolligi, reytingi va profil sozlamalarini boshqaradigan ekranlar.</p>
+    </div>
+    <div class="frame-row" id="row-provider"></div>
+  </div>
+</section>
+
+<!-- ================= REGISTER ================= -->
+<section class="flow-section moodwrap mood-soft" id="sec-register">
+  <div class="wrap" style="padding:0;">
+    <div class="flow-head">
+      <span class="flow-kicker" style="color:#B5546A;">06 · Ro'yxatdan o'tish</span>
+      <h2>Mijoz va usta uchun ro'yxatdan o'tish</h2>
+      <p>Rol tanlangandan so'ng har biriga mos forma va tekshiruv (moderatsiya) bosqichi ko'rsatiladi.</p>
+    </div>
+    <div class="frame-row" id="row-register"></div>
+  </div>
+</section>
+
+<div class="footer-page wrap">◆ Hunar Baby — mobil ilova dizayn maketi (interaktiv demo). Har bir ekran haqiqiy ilova kodiga aylantirish uchun asos sifatida ishlatilishi mumkin.</div>
+
+<script>
+/* ============== HELPERS ============== */
+function statusBar(mode){ // mode: 'light' (white text, dark bg) or 'dark' (dark text, light bg)
+  const cls = mode==='light' ? 'light-sb' : 'dark-sb';
+  return `<div class="statusbar ${cls}"><span>9:41</span>
+    <div class="sb-icons"><div class="sb-bars"><i></i><i></i><i></i><i></i></div>
+    <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 4C4.5 1 9.5 1 13 4M3.2 6.2C5.5 4.2 8.5 4.2 10.8 6.2M5.5 8.2C6.4 7.4 7.6 7.4 8.5 8.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+    <div class="sb-batt"></div></div></div>`;
+}
+function homeInd(dark){ return `<div class="home-indicator ${dark?'on-dark':''}"></div>`; }
+function initials(name){ return name.split(' ').map(function(s){return s[0];}).slice(0,2).join(''); }
+function fmt(n){ return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,' '); }
+
+function phone(innerHtml, cap, sub, notchOn){
+  const notch = notchOn===false ? '' : '<div class="notch"></div>';
+  return `<div class="frame-col">
+    <div class="phone-shell"><div class="phone-screen">${notch}${innerHtml}</div></div>
+    <div class="frame-cap"><b>${cap}</b><span>${sub}</span></div>
+  </div>`;
+}
+
+/* ============== 01. ONBOARDING ============== */
+function buildOnboarding(){
+  const s1 = `
+    ${statusBar('light')}
+    <div class="scr-body" style="background:linear-gradient(160deg,#123B52 0%,#0B2438 60%,#0E8E86 130%);display:flex;flex-direction:column;justify-content:space-between;">
+      <div></div>
+      <div style="text-align:center;padding:0 26px;">
+        <div style="width:74px;height:74px;margin:0 auto 18px;border-radius:22px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-size:32px;">🧰</div>
+        <div style="color:#fff;font-size:24px;font-weight:800;letter-spacing:-0.01em;">Hunar Baby</div>
+        <p style="color:rgba(255,255,255,0.7);font-size:12.5px;margin-top:8px;">Qo'lida hunari bor ustani<br>bir zumda toping</p>
+      </div>
+      <div style="padding:22px 22px 30px;">
+        <button class="pill-btn teal">Boshlash →</button>
+        <p style="text-align:center;color:rgba(255,255,255,0.55);font-size:11px;margin-top:14px;">Hisobingiz bormi? <b style="color:#fff;">Kirish</b></p>
+      </div>
+    </div>${homeInd(true)}`;
+
+  const s2 = `
+    ${statusBar('dark')}
+    <div class="scr-pad">
+      <h3 style="font-size:18px;margin:10px 0 4px;">Siz kim sifatida kirasiz?</h3>
+      <p style="color:var(--ink-soft);font-size:11.5px;margin-bottom:18px;">Keyinroq buni sozlamalardan o'zgartirishingiz mumkin.</p>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="role-card sel">
+          <div class="role-emoji">🙋</div>
+          <div><b style="font-size:13.5px;">Mijozman</b><p style="font-size:11px;color:var(--ink-soft);margin-top:2px;">Usta izlab, xizmat buyurtma qilaman</p></div>
+        </div>
+        <div class="role-card">
+          <div class="role-emoji">🧑‍🔧</div>
+          <div><b style="font-size:13.5px;">Ustaman</b><p style="font-size:11px;color:var(--ink-soft);margin-top:2px;">Hunarimni ko'rsatib, buyurtma qabul qilaman</p></div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:auto;padding:14px 18px 20px;">
+      <button class="pill-btn primary">Davom etish →</button>
+    </div>${homeInd(false)}`;
+
+  const s3 = `
+    ${statusBar('dark')}
+    <div class="scr-pad" style="text-align:center;padding-top:30px;">
+      <div style="width:220px;height:150px;margin:0 auto 22px;border-radius:16px;background:linear-gradient(160deg,#E7EDF3,#DCE7EF);position:relative;overflow:hidden;">
+        <div style="position:absolute;top:38%;left:42%;width:14px;height:14px;background:var(--brick,#A34423);border-radius:50% 50% 50% 0;transform:rotate(-45deg);"></div>
+        <div style="position:absolute;top:55%;left:60%;width:10px;height:10px;background:var(--turquoise);border-radius:50% 50% 50% 0;transform:rotate(-45deg);"></div>
+        <div style="position:absolute;top:65%;left:25%;width:10px;height:10px;background:var(--ochre);border-radius:50% 50% 50% 0;transform:rotate(-45deg);"></div>
+      </div>
+      <h3 style="font-size:17px;">Joylashuvingizni aniqlaymiz</h3>
+      <p style="color:var(--ink-soft);font-size:11.5px;margin:8px 0 22px;">Eng yaqin va tez yetib keladigan ustalarni topish uchun lokatsiyaga ruxsat bering.</p>
+    </div>
+    <div style="margin-top:auto;padding:14px 18px 20px;">
+      <button class="pill-btn primary" style="margin-bottom:9px;">Ruxsat berish</button>
+      <button class="pill-btn ghost">Keyinroq</button>
+    </div>${homeInd(false)}`;
+
+  document.getElementById('row-onboarding').innerHTML =
+    phone(s1,'Splash ekran','Get started') +
+    phone(s2,'Rol tanlash','Mijoz / Usta') +
+    phone(s3,'Lokatsiya ruxsati','Onboarding oxiri');
+}
+
+/* ============== 02. HOME / SEARCH ============== */
+const CATS_MINI = [
+  {emoji:'🩺',name:'Hamshira',bg:'#0E8E8622'},
+  {emoji:'🍳',name:'Oshpaz',bg:'#D9662C22'},
+  {emoji:'✂️',name:'Sartarosh',bg:'#C6852B22'},
+  {emoji:'👞',name:'Sapoqchi',bg:'#7A4B2922'},
+  {emoji:'🔧',name:'Santexnik',bg:'#2563A822'},
+  {emoji:'⚡',name:'Elektrik',bg:'#E0A80022'},
+  {emoji:'🛒',name:'Xaridchi',bg:'#3F8F4F22'},
+  {emoji:'🚗',name:'Haydovchi',bg:'#16324F22'},
+];
+function buildHome(){
+  const s1 = `
+    ${statusBar('dark')}
+    <div class="scr-pad" style="padding-bottom:0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <p style="font-size:11px;color:var(--ink-soft);">Xayrli kun 👋</p>
+          <h3 style="font-size:17px;">Dilnoza</h3>
+        </div>
+        <div class="icon-btn on-white">🔔</div>
+      </div>
+      <div class="search-bar-in" style="margin-top:14px;">🔍 Usta yoki xizmat izlash...</div>
+      <div class="quickchip-row" style="margin-top:16px;">
+        ${CATS_MINI.map(function(c){return `<div class="quickchip"><div class="ico">${c.emoji}</div><span>${c.name}</span></div>`;}).join('')}
+      </div>
+      <div class="card-white" style="margin-top:16px;background:linear-gradient(135deg,var(--cobalt),#12578F);border:none;color:#fff;padding:16px;">
+        <p style="font-size:11px;color:rgba(255,255,255,0.75);">Navbatdagi buyurtma</p>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+          <div><b style="font-size:13.5px;">Sherzod M. — Santexnik</b><p style="font-size:10.5px;color:rgba(255,255,255,0.7);margin-top:3px;">Bugun · 14:00</p></div>
+          <div class="avatar-sm" style="background:rgba(255,255,255,0.2);">SM</div>
+        </div>
+      </div>
+      <p style="font-size:12.5px;font-weight:800;margin-top:16px;">Top ustalar</p>
+    </div>
+    <div class="scr-pad" style="padding-top:0;flex:1;overflow-y:auto;">
+      ${['Gulnora Rashidova · Hamshira · 4.9','Aziz Karimov · Oshpaz · 4.7','Bekzod Yusupov · Sartarosh · 4.8'].map(function(t){
+        const parts=t.split(' · ');
+        return `<div class="list-provider"><div class="avatar-sm" style="background:var(--cobalt);">${initials(parts[0])}</div>
+        <div style="flex:1;"><b style="font-size:12px;">${parts[0]}</b><p style="font-size:10.5px;color:var(--ink-soft);">${parts[1]}</p></div>
+        <div class="stars-mini">★ ${parts[2]}</div></div>`;
+      }).join('')}
+    </div>
+    <div class="bottomtabs">
+      <div class="tab active"><span class="ti">🏠</span>Bosh sahifa</div>
+      <div class="tab"><span class="ti">🔍</span>Qidiruv</div>
+      <div class="tab"><span class="ti">🧾</span>Buyurtmalar</div>
+      <div class="tab"><span class="ti">👤</span>Profil</div>
+    </div>${homeInd(false)}`;
+
+  const s2 = `
+    ${statusBar('dark')}
+    <div class="topbar-inphone"><div class="icon-btn on-white">←</div><b style="font-size:13.5px;">Santexnik</b><div class="icon-btn on-white">⚙️</div></div>
+    <div class="scr-pad" style="padding-top:6px;">
+      <div style="display:flex;gap:8px;">
+        <div class="tag-chip" style="background:var(--cobalt);color:#fff;">Kasb bo'yicha</div>
+        <div class="tag-chip">Reyting bo'yicha</div>
+      </div>
+    </div>
+    <div class="scr-pad" style="padding-top:6px;flex:1;overflow-y:auto;">
+      ${[['Sherzod Mirzayev','Sergeli tumani','4.9','70 000'],['Ravshan Qodirov','Buxoro, Markaz','4.3','60 000'],['Otabek Yoldoshev','Chilonzor tumani','4.6','65 000']].map(function(p){
+        return `<div class="list-provider"><div class="avatar-sm" style="background:var(--cobalt);">${initials(p[0])}</div>
+        <div style="flex:1;"><b style="font-size:12px;">${p[0]}</b><p style="font-size:10.5px;color:var(--ink-soft);">📍 ${p[1]}</p>
+        <div class="stars-mini" style="margin-top:2px;">★ ${p[2]}</div></div>
+        <div style="text-align:right;"><b style="font-size:11.5px;font-family:var(--font-mono);">${p[3]}</b><p style="font-size:9px;color:var(--ink-soft);">so'm</p></div></div>`;
+      }).join('')}
+    </div>${homeInd(false)}`;
+
+  const s3 = `
+    ${statusBar('light')}
+    <div class="scr-body" style="position:relative;background:linear-gradient(150deg,#DCE7EF,#B9CEDD);">
+      <div class="topbar-inphone" style="position:relative;z-index:2;"><div class="icon-btn on-white">←</div><b style="font-size:13.5px;">Yaqin atrofda</b><div class="icon-btn on-white">☰</div></div>
+      <div style="position:absolute;top:70px;left:40px;width:16px;height:16px;background:var(--cobalt);border-radius:50% 50% 50% 0;transform:rotate(-45deg);"></div>
+      <div style="position:absolute;top:130px;left:150px;width:22px;height:22px;background:var(--brick,#A34423);border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 0 0 6px rgba(163,68,35,0.15);"></div>
+      <div style="position:absolute;top:220px;left:90px;width:16px;height:16px;background:var(--turquoise);border-radius:50% 50% 50% 0;transform:rotate(-45deg);"></div>
+      <div style="position:absolute;bottom:16px;left:16px;right:16px;">
+        <div class="card-white" style="display:flex;gap:10px;align-items:center;">
+          <div class="avatar-sm" style="background:var(--brick,#A34423);">AK</div>
+          <div style="flex:1;"><b style="font-size:12px;">Aziz Karimov · Oshpaz</b><p style="font-size:10.5px;color:var(--ink-soft);">700 m uzoqlikda · ★ 4.7</p></div>
+          <div class="icon-btn on-white">→</div>
+        </div>
+      </div>
+    </div>${homeInd(false)}`;
+
+  document.getElementById('row-home').innerHTML =
+    phone(s1,'Bosh sahifa','Dashboard') +
+    phone(s2,'Qidiruv natijalari','Kasb bo\u2019yicha ro\u2019yxat') +
+    phone(s3,'Xarita ko\u2019rinishi','Lokatsiya bo\u2019yicha');
+}
+
+/* ============== 03. CATEGORY SPECIFIC ============== */
+const CATEGORIES = [
+  {id:'hamshira',name:'Gulnora Rashidova',role:'Hamshira',emoji:'🩺',accent:'#0E8E86',accentDeep:'#0A6A63',price:60000,rating:4.9,loc:'Chilonzor, Toshkent',
+    meta:[['8 yil','Tajriba'],['Uyga','Tashrif'],['24/7','Chaqiruv']],
+    tags:['In\u2019eksiya','Bosim o\u2019lchash','Tomchi qo\u2019yish','Yara bog\u2019lash'], extra:'none'},
+  {id:'oshpaz',name:'Aziz Karimov',role:'Oshpaz',emoji:'🍳',accent:'#D9662C',accentDeep:'#A94E1F',price:80000,rating:4.7,loc:'Yunusobod, Toshkent',
+    meta:[['6 yil','Tajriba'],['Uyda','Tayyorlash'],['1-50','Kishi uchun']],
+    tags:['Milliy taom','To\u2019y uchun','Yetkazish bor'], extra:'menu'},
+  {id:'sartarosh',name:'Bekzod Yusupov',role:'Sartarosh',emoji:'✂️',accent:'#C6852B',accentDeep:'#1F1B16',price:35000,rating:4.8,loc:'Mirzo Ulug\u2019bek, Toshkent',
+    meta:[['5 yil','Tajriba'],['Ustaxona','Xizmat joyi'],['20 min','O\u2019rtacha vaqt']],
+    tags:['Erkaklar turmagi','Soqol dizayni'], extra:'portfolio'},
+  {id:'sapoqchi',name:'Farrux Odilov',role:'Sapoqchi',emoji:'👞',accent:'#7A4B29',accentDeep:'#4E2F19',price:25000,rating:4.5,loc:'Registon, Samarqand',
+    meta:[['12 yil','Tajriba'],['Do\u2019kon','Xizmat joyi'],['Kafolat','30 kun']],
+    tags:['Charm ta\u2019miri','Poshna almashtirish'], extra:'repairs'},
+  {id:'santexnik',name:'Sherzod Mirzayev',role:'Santexnik',emoji:'🔧',accent:'#2563A8',accentDeep:'#173F6B',price:70000,rating:4.9,loc:'Sergeli, Toshkent',
+    meta:[['10 yil','Tajriba'],['30 daq','Yetib kelish'],['24/7','Chaqiruv']],
+    tags:['Quvur almashtirish','Kran o\u2019rnatish','Isitish tizimi'], extra:'emergency'},
+  {id:'elektrik',name:'Jasur Toshpo\u2019latov',role:'Elektrik',emoji:'⚡',accent:'#B98A00',accentDeep:'#1A1A1A',price:65000,rating:4.6,loc:'Yashnobod, Toshkent',
+    meta:[['7 yil','Tajriba'],['12 oy','Kafolat'],['Sertifikat','Bor']],
+    tags:['Elektr montaj','Avariya xizmati'], extra:'certificate'},
+  {id:'xaridchi',name:'Nodira Ergasheva',role:'Xaridchi / uy yordamchisi',emoji:'🛒',accent:'#3F8F4F',accentDeep:'#255931',price:30000,rating:4.95,loc:'Shayxontohur, Toshkent',
+    meta:[['4 yil','Tajriba'],['1 soat','O\u2019rtacha vaqt'],['Naqd/karta','To\u2019lov']],
+    tags:['Bozor xaridi','Dorixona','Kommunal to\u2019lov'], extra:'checklist'},
+  {id:'haydovchi',name:'Otabek Nurmatov',role:'Haydovchi',emoji:'🚗',accent:'#16324F',accentDeep:'#0B1B2E',price:45000,rating:4.4,loc:'Bektemir, Toshkent',
+    meta:[['312','Safar'],['4.4','Reyting'],['Sedan','Avtomobil']],
+    tags:['Shahar ichi','Shaharlararo'], extra:'vehicle'},
+];
+
+function extraBlock(cat){
+  if(cat.extra==='menu'){
+    const dishes=[['🍚','Osh','45 000'],['🥟','Manti','35 000'],['🍜','Norin','40 000'],['🥐','Somsa','8 000']];
+    return `<p style="font-size:11.5px;font-weight:800;margin:14px 0 8px;">Taomlar menyusi</p>
+      <div class="menu-grid">${dishes.map(function(d){return `<div class="menu-card"><div class="em">${d[0]}</div><b>${d[1]}</b><span>${d[2]} so\u2019m</span></div>`;}).join('')}</div>`;
+  }
+  if(cat.extra==='portfolio'){
+    const styles=[['Klassik','#C6852B'],['Fade','#1F1B16'],['Soqol dizayni','#7A4B29'],['Bolalar','#0E8E86']];
+    return `<p style="font-size:11.5px;font-weight:800;margin:14px 0 8px;">Portfolio</p>
+      <div class="portfolio-grid">${styles.map(function(s){return `<div class="portfolio-card" style="background:${s[1]};">${s[0]}</div>`;}).join('')}</div>`;
+  }
+  if(cat.extra==='repairs'){
+    const rep=[['Poshna almashtirish','1 kun',80],['Tikish','2 soat',35],['Tozalash','30 daqiqa',20]];
+    return `<p style="font-size:11.5px;font-weight:800;margin:14px 0 4px;">Ta\u2019mirlash turlari</p>
+      <div>${rep.map(function(r){return `<div class="repair-row"><span>${r[0]}</span><div style="display:flex;align-items:center;gap:7px;"><div class="dur-bar"><div class="dur-fill" style="width:${r[2]}%;"></div></div><span class="mono" style="color:var(--ink-soft);">${r[1]}</span></div></div>`;}).join('')}</div>`;
+  }
+  if(cat.extra==='emergency'){
+    return `<div class="banner-emergency" style="background:${cat.accent};margin-top:14px;">🚨 Favqulodda chaqiruv 24/7 — 30 daqiqada yetib boramiz</div>`;
+  }
+  if(cat.extra==='certificate'){
+    const rows=[['✅','Xavfsizlik sertifikati'],['🛡️','Kafolat — 12 oy'],['📄','Litsenziya № UZ-4521']];
+    return `<p style="font-size:11.5px;font-weight:800;margin:14px 0 4px;">Tasdiqlangan hujjatlar</p>
+      <div>${rows.map(function(r){return `<div class="cert-row"><span>${r[0]}</span><span>${r[1]}</span></div>`;}).join('')}</div>`;
+  }
+  if(cat.extra==='checklist'){
+    const items=[['Bozordan oziq-ovqat',true],['Dorixonadan dori',true],['Kommunal to\u2019lovlar',false],['Kir yuvish punktiga topshirish',false]];
+    return `<p style="font-size:11.5px;font-weight:800;margin:14px 0 4px;">Bugungi xizmatlar</p>
+      <div>${items.map(function(it){return `<div class="checklist-row"><div class="cbox ${it[1]?'done':''}">${it[1]?'✓':''}</div><span>${it[0]}</span></div>`;}).join('')}</div>`;
+  }
+  if(cat.extra==='vehicle'){
+    return `<div class="vehicle-card" style="background:${cat.accentDeep};margin-top:14px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div><b style="font-size:13px;">🚗 Chevrolet Cobalt</b><p style="font-size:10.5px;color:rgba(255,255,255,0.65);margin-top:3px;">Davlat raqami: 01 A 123 BB</p></div>
+        <div class="stars-mini" style="color:#F3C969;">★ 4.4</div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <div class="tag-chip" style="background:rgba(255,255,255,0.14);color:#fff;">Shahar ichi 3 000/km</div>
+        <div class="tag-chip" style="background:rgba(255,255,255,0.14);color:#fff;">Shahar tashqarisi 2 500/km</div>
+      </div>
+    </div>`;
+  }
+  return '';
+}
+
+function buildCategoryPhone(cat){
+  return `
+    ${statusBar('light')}
+    <div class="scr-body" style="display:flex;flex-direction:column;">
+      <div style="background:linear-gradient(150deg,${cat.accent},${cat.accentDeep});padding:8px 18px 22px;color:#fff;position:relative;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+          <div class="icon-btn">←</div><div class="icon-btn">🤍</div>
+        </div>
+        <div style="text-align:center;margin-top:6px;">
+          <div style="width:58px;height:58px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 8px;">${cat.emoji}</div>
+          <b style="font-size:15px;">${cat.name}</b>
+          <p style="font-size:11px;color:rgba(255,255,255,0.75);margin-top:2px;">${cat.role} · ★ ${cat.rating}</p>
+          <p style="font-size:10.5px;color:rgba(255,255,255,0.6);margin-top:2px;">📍 ${cat.loc}</p>
+        </div>
+      </div>
+      <div class="scr-pad" style="flex:1;overflow-y:auto;margin-top:-14px;background:#fff;border-radius:18px 18px 0 0;position:relative;z-index:2;">
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          ${cat.meta.map(function(m){return `<div class="stat-chip" style="flex:1;"><b>${m[0]}</b><span>${m[1]}</span></div>`;}).join('')}
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;">
+          ${cat.tags.map(function(t){return `<div class="tag-chip">${t}</div>`;}).join('')}
+        </div>
+        ${extraBlock(cat)}
+      </div>
+      <div style="padding:12px 18px 18px;border-top:1px solid var(--line);display:flex;align-items:center;gap:10px;">
+        <div><p style="font-size:9.5px;color:var(--ink-soft);">Narxi</p><b style="font-family:var(--font-mono);font-size:14px;">${fmt(cat.price)} so\u2019m</b></div>
+        <button class="pill-btn primary" style="background:${cat.accentDeep};flex:1;">Band qilish</button>
+      </div>
+    </div>${homeInd(false)}`;
+}
+function buildCategories(){
+  document.getElementById('row-categories').innerHTML = CATEGORIES.map(function(c){
+    return phone(buildCategoryPhone(c), c.role, c.name);
+  }).join('');
+}
+
+/* ============== 04. BOOKING FLOW ============== */
+function buildBooking(){
+  const s1 = `
+    ${statusBar('dark')}
+    <div class="topbar-inphone"><div class="icon-btn on-white">←</div><b style="font-size:13.5px;">Sana va vaqt</b><div style="width:30px;"></div></div>
+    <div class="scr-pad">
+      <div class="card-white" style="display:flex;gap:10px;align-items:center;margin-bottom:16px;">
+        <div class="avatar-sm" style="background:var(--cobalt);">SM</div>
+        <div><b style="font-size:12.5px;">Sherzod Mirzayev</b><p style="font-size:10.5px;color:var(--ink-soft);">Santexnik · ★ 4.9</p></div>
+      </div>
+      <p style="font-size:11px;font-weight:800;margin-bottom:8px;">Sanani tanlang</p>
+      <div class="date-strip">
+        ${['Du 13','Se 14','Ch 15','Pa 16','Ju 17'].map(function(d,i){const p=d.split(' ');return `<div class="date-pill ${i===2?'sel':''}"><span>${p[0]}</span><b>${p[1]}</b></div>`;}).join('')}
+      </div>
+      <p style="font-size:11px;font-weight:800;margin:16px 0 8px;">Vaqtni tanlang</p>
+      <div class="time-grid">
+        ${['09:00','10:30','12:00','14:00','15:30','17:00'].map(function(t,i){return `<div class="time-slot ${i===1?'sel':''}">${t}</div>`;}).join('')}
+      </div>
+    </div>
+    <div style="margin-top:auto;padding:14px 18px 20px;"><button class="pill-btn primary">Davom etish →</button></div>${homeInd(false)}`;
+
+  const s2 = `
+    ${statusBar('dark')}
+    <div class="topbar-inphone"><div class="icon-btn on-white">←</div><b style="font-size:13.5px;">Manzil va tur</b><div style="width:30px;"></div></div>
+    <div class="scr-pad">
+      <p style="font-size:11px;font-weight:800;margin-bottom:8px;">Xizmat turi</p>
+      <div style="display:flex;flex-direction:column;gap:9px;">
+        <div class="role-card sel" style="padding:12px;"><div class="role-emoji" style="width:34px;height:34px;font-size:15px;">🏠</div><div><b style="font-size:12px;">Uyimga kelsin</b><p style="font-size:10px;color:var(--ink-soft);">Manzilimga tashrif</p></div></div>
+        <div class="role-card" style="padding:12px;"><div class="role-emoji" style="width:34px;height:34px;font-size:15px;">🏢</div><div><b style="font-size:12px;">Ustaxonaga boraman</b><p style="font-size:10px;color:var(--ink-soft);">Usta manzilida</p></div></div>
+      </div>
+      <div class="field-mini" style="margin-top:16px;"><label>Manzil</label><input type="text" placeholder="Tuman, ko\u2019cha, uy raqami" style="pointer-events:none;"></div>
+      <div class="field-mini" style="margin-top:12px;"><label>Izoh</label><input type="text" placeholder="Masalan: kran tomchilayapti" style="pointer-events:none;"></div>
+    </div>
+    <div style="margin-top:auto;padding:14px 18px 20px;"><button class="pill-btn primary">To\u2019lovga o\u2019tish →</button></div>${homeInd(false)}`;
+
+  const s3 = `
+    ${statusBar('dark')}
+    <div class="topbar-inphone"><div class="icon-btn on-white">←</div><b style="font-size:13.5px;">To\u2019lov</b><div style="width:30px;"></div></div>
+    <div class="scr-pad">
+      <div class="card-white" style="background:linear-gradient(135deg,var(--cobalt),#12578F);border:none;color:#fff;padding:16px;margin-bottom:16px;">
+        <p style="font-size:10.5px;color:rgba(255,255,255,0.7);">Hamyon balansi</p>
+        <b style="font-size:22px;font-family:var(--font-mono);">500 000 so\u2019m</b>
+      </div>
+      <div class="card-white">
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;padding:6px 0;"><span>Xizmat narxi</span><b class="mono">70 000 so\u2019m</b></div>
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;padding:6px 0;color:var(--ink-soft);"><span>Komissiya (8%)</span><b class="mono">− 5 600 so\u2019m</b></div>
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;padding:8px 0 0;border-top:1px dashed var(--line);margin-top:4px;font-weight:800;"><span>Jami yechiladi</span><b class="mono">70 000 so\u2019m</b></div>
+      </div>
+    </div>
+    <div style="margin-top:auto;padding:14px 18px 20px;"><button class="pill-btn primary">Hamyondan to\u2019lash</button></div>${homeInd(false)}`;
+
+  const s4 = `
+    ${statusBar('dark')}
+    <div class="scr-pad" style="text-align:center;padding-top:34px;">
+      <div style="width:60px;height:60px;border-radius:50%;background:rgba(14,142,134,0.12);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px;color:var(--turquoise);">✓</div>
+      <h3 style="font-size:16px;">Buyurtma qabul qilindi</h3>
+      <p style="font-size:11.5px;color:var(--ink-soft);margin:8px 0 20px;">Xizmat yakunlangach, ustani baholang</p>
+      <div class="star-row" style="display:flex;justify-content:center;gap:8px;font-size:30px;color:var(--ochre);margin-bottom:16px;">★★★★★</div>
+      <div class="field-mini" style="text-align:left;"><label>Izoh qoldiring</label><input type="text" placeholder="Xizmatdan mamnun qoldim..." style="pointer-events:none;"></div>
+    </div>
+    <div style="margin-top:auto;padding:14px 18px 20px;"><button class="pill-btn ochre">Bahoni yuborish</button></div>${homeInd(false)}`;
+
+  document.getElementById('row-booking').innerHTML =
+    phone(s1,'Sana / vaqt','1-qadam') + phone(s2,'Manzil / tur','2-qadam') +
+    phone(s3,'To\u2019lov','3-qadam') + phone(s4,'Baholash','4-qadam');
+}
+
+/* ============== 05. PROVIDER DASHBOARD ============== */
+function buildProvider(){
+  const s1 = `
+    ${statusBar('dark')}
+    <div class="scr-pad">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="display:flex;gap:9px;align-items:center;"><div class="avatar-sm" style="background:var(--cobalt);">SM</div><div><b style="font-size:13px;">Sherzod Mirzayev</b><p style="font-size:10px;color:var(--ink-soft);">Santexnik</p></div></div>
+        <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:10px;font-weight:800;color:var(--turquoise);">Onlayn</span><div class="toggle-sw on"><i></i></div></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:16px;">
+        <div class="stat-chip" style="flex:1;"><b>4</b><span>Bugungi buyurtma</span></div>
+        <div class="stat-chip" style="flex:1;"><b>340k</b><span>Haftalik daromad</span></div>
+        <div class="stat-chip" style="flex:1;"><b>4.9</b><span>Reyting</span></div>
+      </div>
+      <p style="font-size:11px;font-weight:800;margin:16px 0 8px;">Haftalik daromad</p>
+      <div style="display:flex;align-items:flex-end;gap:7px;height:70px;">
+        ${[30,55,40,70,50,90,60].map(function(h){return `<div style="flex:1;height:${h}%;background:var(--cobalt);border-radius:5px 5px 0 0;opacity:0.85;"></div>`;}).join('')}
+      </div>
+      <p style="font-size:11px;font-weight:800;margin:16px 0 6px;">Navbatdagi buyurtma</p>
+      <div class="card-white" style="display:flex;gap:10px;align-items:center;">
+        <div class="avatar-sm" style="background:var(--ochre);">DY</div>
+        <div style="flex:1;"><b style="font-size:12px;">Dilnoza Yusupova</b><p style="font-size:10px;color:var(--ink-soft);">Bugun · 14:00 · Chilonzor</p></div>
+      </div>
+    </div>
+    <div class="bottomtabs">
+      <div class="tab active"><span class="ti">📊</span>Kabinet</div>
+      <div class="tab"><span class="ti">🧾</span>Buyurtmalar</div>
+      <div class="tab"><span class="ti">⭐</span>Reyting</div>
+      <div class="tab"><span class="ti">⚙️</span>Sozlama</div>
+    </div>${homeInd(false)}`;
+
+  const s2 = `
+    ${statusBar('dark')}
+    <div class="topbar-inphone"><div class="icon-btn on-white">←</div><b style="font-size:13.5px;">Reyting va sharhlar</b><div style="width:30px;"></div></div>
+    <div class="scr-pad">
+      <div class="donut" style="background:conic-gradient(var(--ochre) 0% 82%, #F3F1EC 82% 100%);">
+        <div class="hole"><b>4.9</b><span>320 sharh</span></div>
+      </div>
+      <div style="margin-top:16px;">
+        ${[['5',82],['4',12],['3',4],['2',1],['1',1]].map(function(r){return `<div style="display:flex;align-items:center;gap:8px;font-size:11px;margin-bottom:6px;"><span style="width:14px;font-family:var(--font-mono);">${r[0]}★</span><div class="dur-bar" style="flex:1;"><div class="dur-fill" style="width:${r[1]}%;background:var(--ochre);"></div></div><span style="width:24px;text-align:right;color:var(--ink-soft);">${r[1]}%</span></div>`;}).join('')}
+      </div>
+      <p style="font-size:11px;font-weight:800;margin:14px 0 8px;">So\u2019nggi sharh</p>
+      <div class="card-white"><div class="stars-mini" style="margin-bottom:4px;">★★★★★</div><p style="font-size:11px;color:var(--ink-soft);">Vaqtida keldi, ishni sifatli bajardi, tavsiya qilaman.</p></div>
+    </div>${homeInd(false)}`;
+
+  const s3 = `
+    ${statusBar('dark')}
+    <div class="topbar-inphone"><div class="icon-btn on-white">←</div><b style="font-size:13.5px;">Profil sozlamalari</b><div style="width:30px;"></div></div>
+    <div class="scr-pad">
+      <div style="text-align:center;margin-bottom:14px;"><div class="avatar-sm" style="width:56px;height:56px;font-size:18px;background:var(--cobalt);margin:0 auto;">SM</div><p style="font-size:11px;color:var(--turquoise);font-weight:800;margin-top:6px;">Rasmni o\u2019zgartirish</p></div>
+      <div class="field-mini" style="margin-bottom:10px;"><label>Xizmat narxi</label><input type="text" value="70 000 so\u2019m" style="pointer-events:none;"></div>
+      <div class="field-mini" style="margin-bottom:10px;"><label>Xizmat radiusi</label>
+        <div class="dur-bar" style="height:6px;"><div class="dur-fill" style="width:65%;background:var(--turquoise);"></div></div>
+      </div>
+      <p style="font-size:10px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;margin:12px 0 6px;">Ish kunlari</p>
+      <div class="weekday-strip">
+        ${['Du','Se','Ch','Pa','Ju','Sh','Ya'].map(function(d,i){return `<div class="weekday-dot ${i<6?'on':''}">${d}</div>`;}).join('')}
+      </div>
+    </div>
+    <div style="margin-top:auto;padding:14px 18px 20px;"><button class="pill-btn primary">Saqlash</button></div>${homeInd(false)}`;
+
+  document.getElementById('row-provider').innerHTML =
+    phone(s1,'Usta bosh sahifasi','Dashboard') + phone(s2,'Reyting taqsimoti','Sharhlar') + phone(s3,'Sozlamalar','Profil');
+}
+
+/* ============== 06. REGISTER ============== */
+function buildRegister(){
+  const s1 = `
+    ${statusBar('dark')}
+    <div class="scr-pad">
+      <h3 style="font-size:16px;margin:6px 0 4px;">Mijoz sifatida ro\u2019yxatdan o\u2019ting</h3>
+      <p style="font-size:11px;color:var(--ink-soft);margin-bottom:16px;">Bir necha soniyada tayyor.</p>
+      <div class="field-mini" style="margin-bottom:10px;"><label>To\u2019liq ism</label><input type="text" placeholder="Dilnoza Yusupova" style="pointer-events:none;"></div>
+      <div class="field-mini" style="margin-bottom:10px;"><label>Telefon raqam</label><input type="text" placeholder="+998 90 123 45 67" style="pointer-events:none;"></div>
+      <div class="field-mini" style="margin-bottom:10px;"><label>Shahar</label><input type="text" placeholder="Toshkent" style="pointer-events:none;"></div>
+    </div>
+    <div style="margin-top:auto;padding:14px 18px 20px;"><button class="pill-btn primary">Ro\u2019yxatdan o\u2019tish</button><p style="text-align:center;font-size:10px;color:var(--ink-soft);margin-top:10px;">Ro\u2019yxatdan o\u2019tib, 500 000 so\u2019mlik demo hamyon oling</p></div>${homeInd(false)}`;
+
+  const s2 = `
+    ${statusBar('dark')}
+    <div class="scr-pad">
+      <h3 style="font-size:16px;margin:6px 0 4px;">Usta sifatida ro\u2019yxatdan o\u2019ting</h3>
+      <p style="font-size:11px;color:var(--ink-soft);margin-bottom:14px;">Hunaringizni tanlang</p>
+      <div class="chip-select">
+        ${['🩺 Hamshira','🍳 Oshpaz','✂️ Sartarosh','🔧 Santexnik','⚡ Elektrik','🚗 Haydovchi'].map(function(c,i){return `<div class="c ${i===3?'sel':''}">${c}</div>`;}).join('')}
+      </div>
+      <div class="field-mini" style="margin-top:12px;margin-bottom:10px;"><label>To\u2019liq ism</label><input type="text" placeholder="Sherzod Mirzayev" style="pointer-events:none;"></div>
+      <div class="field-mini"><label>Narx / tuman</label><input type="text" placeholder="70 000 so\u2019m · Sergeli tumani" style="pointer-events:none;"></div>
+    </div>
+    <div style="margin-top:auto;padding:14px 18px 20px;"><button class="pill-btn ochre">Profilni yaratish</button></div>${homeInd(false)}`;
+
+  const s3 = `
+    ${statusBar('dark')}
+    <div class="scr-pad" style="text-align:center;padding-top:34px;">
+      <div style="width:60px;height:60px;border-radius:50%;background:rgba(198,133,43,0.14);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px;color:var(--ochre);">📄</div>
+      <h3 style="font-size:16px;">Shaxsni tasdiqlash</h3>
+      <p style="font-size:11.5px;color:var(--ink-soft);margin:8px 0 18px;">Xavfsizlik uchun hujjat nusxasini yuklang</p>
+      <div style="border:1.6px dashed var(--line);border-radius:12px;padding:24px;font-size:11px;color:var(--ink-soft);">📎 Hujjatni shu yerga yuklang</div>
+      <div class="card-white" style="margin-top:16px;text-align:left;display:flex;gap:9px;align-items:center;">
+        <span style="font-size:16px;">⏳</span><p style="font-size:11px;color:var(--ink-soft);">Moderatsiya tekshiruvi — odatda 24 soat ichida</p>
+      </div>
+    </div>
+    <div style="margin-top:auto;padding:14px 18px 20px;"><button class="pill-btn primary">Yuborish</button></div>${homeInd(false)}`;
+
+  document.getElementById('row-register').innerHTML =
+    phone(s1,'Mijoz formasi','Ro\u2019yxatdan o\u2019tish') + phone(s2,'Usta formasi','Kasb tanlash') + phone(s3,'Tasdiqlash','Xavfsizlik bosqichi');
+}
+
+buildOnboarding();
+buildHome();
+buildCategories();
+buildBooking();
+buildProvider();
+buildRegister();
+</script>
+<div id="installBar">
+  <img src="icon-192.png" alt="Hunar Baby">
+  <div class="txt">Hunar Baby'ni telefoningizga ilova sifatida o'rnating</div>
+  <button id="installBtn">O'rnatish</button>
+  <button class="x" id="installClose">✕</button>
+</div>
+<script>
+  if("serviceWorker" in navigator){
+    window.addEventListener("load", function(){
+      navigator.serviceWorker.register("sw.js").catch(function(){});
+    });
+  }
+  let deferredPrompt;
+  const bar = document.getElementById("installBar");
+  window.addEventListener("beforeinstallprompt", function(e){
+    e.preventDefault();
+    deferredPrompt = e;
+    bar.style.display = "flex";
+  });
+  document.getElementById("installBtn").addEventListener("click", function(){
+    bar.style.display = "none";
+    if(deferredPrompt){ deferredPrompt.prompt(); }
+  });
+  document.getElementById("installClose").addEventListener("click", function(){
+    bar.style.display = "none";
+  });
+</script>
+</body>
+</html>
